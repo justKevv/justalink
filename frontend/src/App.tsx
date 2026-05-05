@@ -15,11 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Navbar } from "./components/ui/navbar";
 import { Card, CardContent } from "./components/ui/card";
 import { Copy, RefreshCcw, SendIcon } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { generateCode } from "./lib/generateCode";
 
 function App() {
   const baseUrl = window.location.origin;
+  const [shortenedData, setShortenedData] = useState<{ code: string } | null>(null);
   const formSchema = z.object({
     url: z.url("Please enter a valid URL"),
     code: z.string(),
@@ -67,6 +68,7 @@ function App() {
         body: formData,
       });
       const data = await res.json();
+      setShortenedData(data);
       console.log(data);
     } catch (error) {
       console.error("Error:", error);
@@ -163,15 +165,19 @@ function App() {
             </Form>
           </CardContent>
         </Card>
-        <Card className="bg-chart-4/20 w-full max-w-2xl flex flex-row items-center justify-between p-4">
-          <div>
-            <p className="text-green-800">✓ your short link</p>
-            <p className="font-bold">{baseUrl}/dQw4w9</p>
-          </div>
-          <Button variant="neutral">
-            Copy Link <Copy />
-          </Button>
-        </Card>
+        {shortenedData && (
+          <Card className="bg-chart-4/20 w-full max-w-2xl flex flex-row items-center justify-between p-4">
+            <div>
+              <p className="text-green-800">✓ your short link</p>
+              <p className="font-bold">
+                {baseUrl}/{shortenedData.code}
+              </p>
+            </div>
+            <Button variant="neutral">
+              Copy Link <Copy />
+            </Button>
+          </Card>
+        )}
         <div className="w-full max-w-2xl flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center">
             <Card className="py-0.5 px-4 text-[14px]">RECENT LINKS</Card>
