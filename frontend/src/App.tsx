@@ -14,13 +14,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Navbar } from "./components/ui/navbar";
 import { Card, CardContent } from "./components/ui/card";
-import { Copy, RefreshCcw, SendIcon } from "lucide-react";
+import { Copy, CopyCheck, RefreshCcw, SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { generateCode } from "./lib/generateCode";
 
 function App() {
   const baseUrl = window.location.origin;
   const [shortenedData, setShortenedData] = useState<{ code: string } | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
+
   const formSchema = z.object({
     url: z.url("Please enter a valid URL"),
     code: z.string(),
@@ -56,6 +58,16 @@ function App() {
       return false;
     }
   }
+
+  const handleCopyLink = () => {
+    if (shortenedData) {
+      const shortlink = `${baseUrl}/${shortenedData.code}`;
+      navigator.clipboard.writeText(shortlink);
+      setIsCopied(true);
+
+      setTimeout(() => setIsCopied(false), 5000);
+    }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
@@ -173,8 +185,13 @@ function App() {
                 {baseUrl}/{shortenedData.code}
               </p>
             </div>
-            <Button variant="neutral">
-              Copy Link <Copy />
+            <Button
+              className="bg-white"
+              variant={isCopied ? "noShadow" : "neutral"}
+              onClick={handleCopyLink}
+              disabled={isCopied}
+            >
+              {isCopied ? "Copied" : "Copy Link"} {isCopied ? <CopyCheck /> : <Copy />}
             </Button>
           </Card>
         )}
