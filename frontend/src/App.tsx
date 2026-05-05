@@ -17,6 +17,7 @@ import { Card, CardContent } from "./components/ui/card";
 import { Copy, CopyCheck, RefreshCcw, SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { generateCode } from "./lib/generateCode";
+import { Footer } from "./components/ui/footer";
 
 function App() {
   const baseUrl = window.location.origin;
@@ -125,18 +126,18 @@ function App() {
     <>
       <Navbar />
       <div className="flex flex-col justify-center items-center px-6 py-12 gap-7">
-        <h2 className="text-5xl text-center flex flex-col gap-3">
+        <h2 className="text-4xl sm:text-5xl text-center flex flex-col gap-3">
           <span>just a</span>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-center">
             <span className="px-3 py-1.5 bg-chart-3 text-white">link</span>
             <span className="px-3 py-1.5 bg-chart-2 text-white">shortener</span>
           </div>
         </h2>
-        <Card className="w-fit py-2 px-4 rounded-none text-[16px] rotate-z-1">
+        <Card className="w-fit py-2 px-4 rounded-none text-sm sm:text-base rotate-z-1">
           paste a url. get a short link. that's it.
         </Card>
-        <p className="font-normal">All links are saved in your browser</p>
-        <Card className="bg-main/10 w-full max-w-2xl">
+        <p className="font-normal text-sm sm:text-base">All links are saved in your browser</p>
+        <Card className="bg-main/10 w-full max-w-2xl px-4 sm:px-6">
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -145,8 +146,8 @@ function App() {
                   name="url"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>YOUR LONG URL</FormLabel>
-                      <div className="flex gap-2">
+                      <FormLabel className="text-xs sm:text-sm">YOUR LONG URL</FormLabel>
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <FormControl>
                           <Input
                             disabled={shortenedData !== null}
@@ -154,8 +155,12 @@ function App() {
                             {...field}
                           />
                         </FormControl>
-                        <Button type="submit" disabled={shortenedData !== null}>
-                          <SendIcon /> Shorten
+                        <Button
+                          type="submit"
+                          disabled={shortenedData !== null}
+                          className="sm:w-auto"
+                        >
+                          <SendIcon /> <span className="hidden sm:inline">Shorten</span>
                         </Button>
                       </div>
                       <FormMessage />
@@ -167,10 +172,10 @@ function App() {
                   name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>CUSTOM CODE (optional)</FormLabel>
-                      <div className="flex flex-row gap-3 items-center">
-                        <div className="flex flex-row">
-                          <Card className="whitespace-nowrap px-4 py-0 items-center justify-center">
+                      <FormLabel className="text-xs sm:text-sm">CUSTOM CODE (optional)</FormLabel>
+                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center">
+                        <div className="flex flex-row min-w-0">
+                          <Card className="whitespace-nowrap px-2 sm:px-4 py-0 items-center justify-center text-sm sm:text-base">
                             {baseUrl}/
                           </Card>
                           <FormControl>
@@ -188,19 +193,7 @@ function App() {
                         <Button
                           type="button"
                           disabled={!form.getValues("url") || !isValidUrl(form.getValues("url"))}
-                          onClick={() => {
-                            const url = form.getValues("url");
-                            try {
-                              new URL(url);
-                              const generatedCode = generateCode();
-                              form.setValue("code", generatedCode);
-                            } catch {
-                              form.setError("url", {
-                                type: "manual",
-                                message: "Please enter a valid URL first",
-                              });
-                            }
-                          }}
+                          size="icon"
                         >
                           <RefreshCcw />
                         </Button>
@@ -214,15 +207,15 @@ function App() {
           </CardContent>
         </Card>
         {shortenedData && (
-          <Card className="bg-chart-4/20 w-full max-w-2xl flex flex-row items-center justify-between p-4">
+          <Card className="bg-chart-4/20 w-full max-w-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 gap-3 sm:gap-0">
             <div>
-              <p className="text-green-800">✓ your short link</p>
-              <p className="font-bold">
+              <p className="text-green-800 text-xs sm:text-sm">✓ your short link</p>
+              <p className="font-bold text-sm sm:text-base break-all">
                 {baseUrl}/{shortenedData.code}
               </p>
             </div>
             <Button
-              className="bg-white"
+              className="bg-white w-full sm:w-auto"
               variant={isCopied ? "noShadow" : "neutral"}
               onClick={handleCopyLink}
               disabled={isCopied}
@@ -231,29 +224,31 @@ function App() {
             </Button>
           </Card>
         )}
-        <div className="w-full max-w-2xl flex flex-col gap-4">
-          <div className="flex flex-row justify-between items-center">
-            <Card className="py-0.5 px-4 text-[14px]">RECENT LINKS</Card>
-            <p>{recentLinks.length} links</p>
+        <div className="w-full max-w-2xl flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-row justify-between items-center px-2 sm:px-0">
+            <Card className="py-0.5 px-3 sm:px-4 text-xs sm:text-sm">RECENT LINKS</Card>
+            <p className="text-sm sm:text-base">{recentLinks.length} links</p>
           </div>
           {recentLinks.map((link, index) => (
-            <Card key={link.code} className="py-3">
-              <CardContent className="flex flex-row justify-between items-center">
-                <div className="flex flex-row gap-3 items-center">
-                  <p className="bg-main px-1 border-2 border-border">
+            <Card key={link.code} className="py-2 sm:py-3 px-3 sm:px-4">
+              <CardContent className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 p-0">
+                <div className="flex flex-row gap-2 sm:gap-3 items-start sm:items-center w-full sm:w-auto min-w-0">
+                  <p className="bg-main px-1 border-2 border-border text-xs sm:text-base shrink-0">
                     {String(index + 1).padStart(2, "0")}
                   </p>
-                  <div>
-                    <p className="text-chart-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-chart-2 text-xs sm:text-sm break-all">
                       {baseUrl}/{link.code}
                     </p>
-                    <p className="font-light">{link.url}</p>
+                    <p className="font-light text-xs sm:text-sm break-all">{link.url}</p>
                   </div>
                 </div>
                 <Button
                   variant={copiedCodes.has(link.code) ? "noShadow" : "neutral"}
                   onClick={() => handleCopyRecentLink(link.code)}
                   disabled={copiedCodes.has(link.code)}
+                  size="icon"
+                  className="shrink-0"
                 >
                   {copiedCodes.has(link.code) ? <CopyCheck /> : <Copy />}
                 </Button>
@@ -262,6 +257,7 @@ function App() {
           ))}
         </div>
       </div>
+      <Footer />
     </>
   );
 }
