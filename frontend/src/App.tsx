@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { generateCode } from "./lib/generateCode";
 
 function App() {
+  const baseUrl = window.location.origin;
   const formSchema = z.object({
     url: z.url("Please enter a valid URL"),
     code: z.string(),
@@ -73,7 +74,7 @@ function App() {
         <Card className="w-fit py-2 px-4 rounded-none text-[16px] rotate-z-1">
           paste a url. get a short link. that's it.
         </Card>
-        <p>All links are saved in your browser</p>
+        <p className="font-normal">All links are saved in your browser</p>
         <Card className="bg-main/10 w-full max-w-2xl">
           <CardContent>
             <Form {...form}>
@@ -105,7 +106,7 @@ function App() {
                       <div className="flex flex-row gap-3 items-center">
                         <div className="flex flex-row">
                           <Card className="whitespace-nowrap px-4 py-0 items-center justify-center">
-                            jstalink.page/{"  "}
+                            {baseUrl}/
                           </Card>
                           <FormControl>
                             <Input
@@ -148,7 +149,7 @@ function App() {
         <Card className="bg-chart-4/20 w-full max-w-2xl flex flex-row items-center justify-between p-4">
           <div>
             <p className="text-green-800">✓ your short link</p>
-            <p className="font-bold">jstalink.page/dQw4w9</p>
+            <p className="font-bold">{baseUrl}/dQw4w9</p>
           </div>
           <Button variant="neutral">
             Copy Link <Copy />
@@ -164,7 +165,7 @@ function App() {
               <div className="flex flex-row gap-3 items-center">
                 <p className="bg-main px-1 border-2 border-border">01</p>
                 <div>
-                  <p className="text-chart-2">jstalink.page/dQw4w9</p>
+                  <p className="text-chart-2">{baseUrl}/dQw4w9</p>
                   <p className="font-light">https://youtube.com/watch?v=dQw4w9WgXcQ</p>
                 </div>
               </div>
