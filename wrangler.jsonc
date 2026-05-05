@@ -8,7 +8,13 @@
 			"binding": "JUSTALINK",
 			"id": "dec580323b0d46948d452fb3a57f339c"
 		}
-	]
+	],
+	"assets": {
+    "directory": "./frontend/dist"
+	},
+  "build": {
+    "command": "cd frontend && bun run build"
+  }
 	// "compatibility_flags": [
 	//   "nodejs_compat"
 	// ],
