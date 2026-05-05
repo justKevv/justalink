@@ -65,7 +65,11 @@ function App() {
       navigator.clipboard.writeText(shortlink);
       setIsCopied(true);
 
-      setTimeout(() => setIsCopied(false), 5000);
+      setTimeout(() => {
+        setIsCopied(false);
+        setShortenedData(null);
+        form.reset();
+      }, 3000);
     }
   };
 
@@ -118,9 +122,13 @@ function App() {
                       <FormLabel>YOUR LONG URL</FormLabel>
                       <div className="flex gap-2">
                         <FormControl>
-                          <Input placeholder="https://jstkev.in/" {...field} />
+                          <Input
+                            disabled={shortenedData !== null}
+                            placeholder="https://jstkev.in/"
+                            {...field}
+                          />
                         </FormControl>
-                        <Button type="submit">
+                        <Button type="submit" disabled={shortenedData !== null}>
                           <SendIcon /> Shorten
                         </Button>
                       </div>
@@ -142,7 +150,9 @@ function App() {
                           <FormControl>
                             <Input
                               disabled={
-                                !form.getValues("url") || !isValidUrl(form.getValues("url"))
+                                !form.getValues("url") ||
+                                !isValidUrl(form.getValues("url")) ||
+                                shortenedData !== null
                               }
                               placeholder="auto-generated"
                               {...field}
