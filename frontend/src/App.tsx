@@ -160,7 +160,8 @@ function App() {
                           disabled={shortenedData !== null}
                           className="sm:w-auto"
                         >
-                          <SendIcon /> <span className="hidden sm:inline">Shorten</span>
+                          <SendIcon />
+                          Shorten
                         </Button>
                       </div>
                       <FormMessage />
@@ -175,7 +176,7 @@ function App() {
                       <FormLabel className="text-xs sm:text-sm">CUSTOM CODE (optional)</FormLabel>
                       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center">
                         <div className="flex flex-row min-w-0">
-                          <Card className="whitespace-nowrap px-2 sm:px-4 py-0 items-center justify-center text-sm sm:text-base">
+                          <Card className="whitespace-nowrap px-2 sm:px-4 py-0 items-center justify-center text-[12.5px] sm:text-base">
                             {baseUrl}/
                           </Card>
                           <FormControl>
