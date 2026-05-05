@@ -12,8 +12,8 @@
 	"assets": {
     "directory": "./frontend/dist"
 	},
-  "build": {
-    "command": "cd frontend && bun run build"
+	"build": {
+    "command": "cd frontend && bun install && bun run build"
   }
 	// "compatibility_flags": [
 	//   "nodejs_compat"
