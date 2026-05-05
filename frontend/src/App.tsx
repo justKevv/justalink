@@ -56,8 +56,25 @@ function App() {
     }
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const formData = new FormData();
+    formData.append("url", values.url);
+    formData.append("code", values.code);
+
+    try {
+      const res = await fetch(`${baseUrl}/shorten`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error:", error);
+      form.setError("url", {
+        type: "manual",
+        message: "Failed to shorten URL. Please try again.",
+      });
+    }
   }
 
   return (
