@@ -22,6 +22,11 @@ function App() {
   const baseUrl = window.location.origin;
   const [shortenedData, setShortenedData] = useState<{ code: string } | null>(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [copiedCodes, setCopiedCodes] = useState<Set<string>>(new Set());
+  const [recentLinks, setRecentLinks] = useState<Array<{ code: string; url: string }>>(() => {
+    const saved = JSON.parse(localStorage.getItem("recentLinks") || "[]");
+    return saved;
+  });
 
   const formSchema = z.object({
     url: z.url("Please enter a valid URL"),
@@ -69,8 +74,23 @@ function App() {
         setIsCopied(false);
         setShortenedData(null);
         form.reset();
-      }, 3000);
+      }, 2000);
     }
+  };
+
+  const handleCopyRecentLink = (code: string) => {
+    const shortlink = `${baseUrl}/${code}`;
+    navigator.clipboard.writeText(shortlink);
+
+    setCopiedCodes((prev) => new Set(prev).add(code));
+
+    setTimeout(() => {
+      setCopiedCodes((prev) => {
+        const updated = new Set(prev);
+        updated.delete(code);
+        return updated;
+      });
+    }, 2000);
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -85,7 +105,13 @@ function App() {
       });
       const data = await res.json();
       setShortenedData(data);
-      console.log(data);
+
+      // save to local
+      const existing = JSON.parse(localStorage.getItem("recentLinks") || "[]");
+      existing.unshift({ code: data.code, url: values.url });
+      const updated = existing.slice(0, 10);
+      setRecentLinks(updated);
+      localStorage.setItem("recentLinks", JSON.stringify(updated));
     } catch (error) {
       console.error("Error:", error);
       form.setError("url", {
@@ -208,22 +234,32 @@ function App() {
         <div className="w-full max-w-2xl flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center">
             <Card className="py-0.5 px-4 text-[14px]">RECENT LINKS</Card>
-            <p>3 links</p>
+            <p>{recentLinks.length} links</p>
           </div>
-          <Card className="py-3">
-            <CardContent className="flex flex-row justify-between items-center">
-              <div className="flex flex-row gap-3 items-center">
-                <p className="bg-main px-1 border-2 border-border">01</p>
-                <div>
-                  <p className="text-chart-2">{baseUrl}/dQw4w9</p>
-                  <p className="font-light">https://youtube.com/watch?v=dQw4w9WgXcQ</p>
+          {recentLinks.map((link, index) => (
+            <Card key={link.code} className="py-3">
+              <CardContent className="flex flex-row justify-between items-center">
+                <div className="flex flex-row gap-3 items-center">
+                  <p className="bg-main px-1 border-2 border-border">
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <div>
+                    <p className="text-chart-2">
+                      {baseUrl}/{link.code}
+                    </p>
+                    <p className="font-light">{link.url}</p>
+                  </div>
                 </div>
-              </div>
-              <Button variant="neutral">
-                <Copy />
-              </Button>
-            </CardContent>
-          </Card>
+                <Button
+                  variant={copiedCodes.has(link.code) ? "noShadow" : "neutral"}
+                  onClick={() => handleCopyRecentLink(link.code)}
+                  disabled={copiedCodes.has(link.code)}
+                >
+                  {copiedCodes.has(link.code) ? <CopyCheck /> : <Copy />}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </>
