@@ -1,11 +1,10 @@
 import type { Context } from 'hono'
-import { generateCode } from '../lib/utils';
 
 export async function shorten(c: Context) {
   const formData = await c.req.formData();
   const url = formData.get('url');
   const expires30 = formData.has('expires30');
-  const code = generateCode();
+  const code = formData.get('code');
 
   if (expires30) {
     await c.env.JUSTALINK.put(code, url, {
