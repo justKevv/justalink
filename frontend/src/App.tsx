@@ -232,8 +232,8 @@ function App() {
           </div>
           {recentLinks.map((link, index) => (
             <Card key={link.code} className="py-2 sm:py-3 px-3 sm:px-4">
-              <CardContent className="flex flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 p-0">
-                <div className="flex flex-row gap-2 sm:gap-3 items-start sm:items-center w-full sm:w-auto min-w-0">
+              <CardContent className="flex flex-row justify-between items-center gap-3 sm:gap-0 p-0">
+                <div className="flex flex-row gap-2 sm:gap-3 items-center w-full sm:w-auto min-w-0">
                   <p className="bg-main px-1 border-2 border-border text-xs sm:text-base shrink-0">
                     {String(index + 1).padStart(2, "0")}
                   </p>
